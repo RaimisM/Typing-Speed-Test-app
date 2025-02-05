@@ -1,0 +1,60 @@
+
+body {
+    background-image: url('../images/keyboard.jpg');
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+#text-container {
+    font-size: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    height: 50px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#input-area {
+    width: 600px;
+    font-size: 18px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+
+#stats {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #fff;
+}
+
+button {
+    background-color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #fff568;
+}
+
+#chart-container {
+    width: 600px;
+    height: 300px;
+    margin: auto;
+    margin-top: 20px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
