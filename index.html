@@ -8,16 +8,34 @@
 </head>
 <body>
     <h1>Typing Speed Test</h1>
+    <h2>Test your typing skills!</h2>
+    <div id="stats">
+        <div class="stats-item">
+            <span id="timer" class="large-number">60</span>
+            <p class="stat-label">seconds<span class="unit"></span></p>
+        </div>
+        <div class="stats-item">
+            <span id="wpm" class="large-number">0</span>
+            <p class="stat-label">words/min</p>
+        </div>
+        <div class="stats-item">
+            <span id="accuracy" class="large-number">0</span>
+            <p class="stat-label">% accuracy<span class="unit"></span></p>
+        </div>
+    </div>
     <div id="text-container"></div>
     <textarea id="input-area" rows="3" placeholder="Start typing"></textarea>
-    <div id="stats">
-        <p>Time Left: <span id="timer">60</span>s</p>
-        <p>WPM: <span id="wpm">0</span></p>
-        <p>Accuracy: <span id="accuracy">100</span>%</p>
+    <div>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
     </div>
-    <button id="reset">Reset</button>
     <div id="chart-container">
         <canvas id="progressChart"></canvas>
     </div>
+    <footer>
+        <p>Copyright &copy; 2025 | Designed by RM</p>
+    </footer>
+
+    <script type="module" src="scripts/main.js"></script>
 </body>
 </html>
