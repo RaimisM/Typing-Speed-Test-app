@@ -1,5 +1,5 @@
 body {
-    background-image: url('../images/keyboard2.jpg');
+    background-image: url('../images/keyboard3.jpg');
     background-size: cover;
     height: 100vh;
     margin: 0;
@@ -25,10 +25,11 @@ h2 {
 }
 
 #text-container {
-    font-size: 28px;
+    font-size: 24px;
     margin: 20px auto;
-    max-width: 600px;
-    height: 50px;
+    max-width: 700px;
+    min-height: calc(3 * 1.5em);
+    line-height: 1.5em;
     padding: 10px;
     background: white;
     border-radius: 5px;
@@ -36,7 +37,7 @@ h2 {
 }
 
 #input-area {
-    width: 600px;
+    width: 700px;
     font-size: 28px;
     padding: 10px;
     margin-top: 10px;
@@ -49,7 +50,7 @@ h2 {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0px 25%;
+    padding: 0px 20%;
 }
 
 .stats-item {
@@ -86,8 +87,8 @@ button:hover {
 }
 
 #chart-container {
-    width: 600px;
-    height: 200px;
+    width: 700px;
+    height: 700px;
     margin: auto;
     margin-top: 20px;
     background: #fff;
