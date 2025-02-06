@@ -1,8 +1,8 @@
 import { fetchPoem } from "./api.js";
 
-async function displayPoem() {
-    const poem = await fetchPoem();
-    console.log(poem);
+function init() {
+    const textContainer = document.getElementById("text-container");
+    fetchPoem(textContainer);
 }
 
-displayPoem();
+init();
