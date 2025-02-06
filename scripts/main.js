@@ -1,8 +1,9 @@
 import { fetchPoem } from "./api.js";
+import { typingChecker } from "./typing.js";
 
-function init() {
-    const textContainer = document.getElementById("text-container");
-    fetchPoem(textContainer);
+async function init() {
+    await fetchPoem();
+    typingChecker();
 }
 
-init();
+document.addEventListener("DOMContentLoaded", init);

@@ -2,13 +2,17 @@ export async function fetchPoem() {
     try {
         const response = await fetch("https://poetrydb.org/random");
         const data = await response.json();
+
         if (data.length > 0) {
             const poem = data[0];
-            const poemText = poem.lines.join("\n");
-            const poemLines = poemText.split("\n");
-            let currentIndent = 0;
 
+            console.log(poem);
+
+            const poemLines = poem.lines || [];
+
+            let currentIndent = 0;
             const container = document.getElementById("text-container");
+            container.innerHTML = "";
 
             function nextTypingText() {
                 const typingText = poemLines.slice(currentIndent, currentIndent + 1).join("\n");
