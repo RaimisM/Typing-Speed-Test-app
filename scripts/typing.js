@@ -1,9 +1,11 @@
 import { gameOver } from './game.js';
 
+let correctKeystrokes = 0;  // Tracks the correct keystrokes
+let totalKeystrokes = 0;    // Tracks the total keystrokes (correct + incorrect)
 
 export function startTimer() {
     const timerElement = document.getElementById('timer');
-    let timeLeft = 20;
+    let timeLeft = 20; // Set your desired time
 
     timerElement.textContent = timeLeft;
 
@@ -19,7 +21,6 @@ export function startTimer() {
     }, 1000);
 }
 
-
 // Live WPM tracking
 export function startWpmTracking() {
     if (!window.gameStart) return;
@@ -34,11 +35,37 @@ export function startWpmTracking() {
 
         const wpm = getWpm();
         if (wpmTracker) {
-            wpmTracker.textContent = `${wpm}`;
+            wpmTracker.textContent = `${wpm}`; // Update WPM in real-time
         }
     }, 100);
 }
 
+// Track keystrokes for accuracy
+export function trackKeystrokes(event) {
+    if (window.gameOver) return; // Block keystrokes if game is over
+
+    const typedLetter = event.key; // Get the typed letter (assuming only one letter is typed at a time)
+
+    const currentLetter = document.querySelector('.letter.current');
+    const correct = currentLetter && currentLetter.textContent === typedLetter;
+
+    if (correct) {
+        correctKeystrokes++; // Increment correct keystrokes
+    }
+
+    totalKeystrokes++; // Increment total keystrokes (correct + incorrect)
+
+    updateAccuracy(); // Update the accuracy display
+}
+
+// Update accuracy
+function updateAccuracy() {
+    const accuracyElement = document.getElementById('accuracy');
+    const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+    accuracyElement.textContent = `${accuracy}`; // Display accuracy
+}
+
+// Get words per minute (WPM)
 export function getWpm() {
     if (!window.gameStart) return 0;
 

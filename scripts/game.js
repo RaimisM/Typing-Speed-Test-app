@@ -1,5 +1,5 @@
 import { addClass, removeClass, randomWord, splitWord } from './utils.js';
-import { getWpm, startTimer, startWpmTracking } from './typing.js';
+import { getWpm, startTimer, startWpmTracking, trackKeystrokes } from './typing.js'; // Make sure trackKeystrokes is imported
 
 const wordsContainer = document.getElementById('game-container');
 
@@ -49,7 +49,7 @@ document.addEventListener('keydown', (event) => {
 function handleTyping(event) {
     if (window.gameOver) return; // Ensure typing is blocked when game is over
 
-    // Your existing typing logic here
+    trackKeystrokes(event); // Track the keystrokes in typing.js for accuracy
 }
 
 // Game over function
@@ -61,14 +61,11 @@ export function gameOver() {
     addClass(document.getElementById('game'), 'over');
 
     const wpm = getWpm();
-    document.getElementById('wpmTracker').textContent = `WPM: ${wpm}`;
+    document.getElementById('wpmTracker').textContent = `${wpm}`;
     document.getElementById('timer').textContent = "0"; // Ensure timer shows 0
 
     console.log("Game Over flag set:", window.gameOver); // Check if flag is set
 }
-
-
-
 
 // Move cursor function
 export function moveCursor() {
