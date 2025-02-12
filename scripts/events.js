@@ -43,7 +43,7 @@ document.getElementById('game').addEventListener('keyup', function (event) {
             if (nextLetter) {
                 addClass(nextLetter, 'current');
             } else {
-                moveToNextWord();
+                console.log('Word completed');
             }
         } else {
             addClass(currentLetter, 'incorrect');
@@ -57,7 +57,7 @@ document.getElementById('game').addEventListener('keyup', function (event) {
     if (isSpace) {
         document.querySelectorAll('.word.current .letter:not(.correct)')
             .forEach(letter => addClass(letter, 'incorrect'));
-        moveToNextWord();
+        moveCursor();
     }
 
     if (isBackspace) {

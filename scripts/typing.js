@@ -3,10 +3,11 @@ import { gameOver } from './game.js';
 let correctKeystrokes = 0;  // Tracks the correct keystrokes
 let totalKeystrokes = 0;    // Tracks the total keystrokes (correct + incorrect)
 
+window.gameActive = false; // Game starts only after first keystroke
+
 export function startTimer() {
     const timerElement = document.getElementById('timer');
-    let timeLeft = 20; // Set your desired time
-
+    let timeLeft = 60;
     timerElement.textContent = timeLeft;
 
     window.timer = setInterval(() => {
@@ -14,60 +15,64 @@ export function startTimer() {
         timerElement.textContent = timeLeft;
 
         if (timeLeft <= 0) {
-            clearInterval(window.timer); // Stop timer
-            timerElement.textContent = "0"; // Ensure it shows 0
-            gameOver(); // Call game over
+            clearInterval(window.timer);
+            timerElement.textContent = "0";
+            gameOver();
         }
     }, 1000);
 }
 
 // Live WPM tracking
 export function startWpmTracking() {
-    if (!window.gameStart) return;
-
     const wpmTracker = document.getElementById('wpmTracker');
 
     const wpmInterval = setInterval(() => {
-        if (window.gameOver) {
-            clearInterval(wpmInterval); // Stop WPM updates when game ends
+        if (!window.gameActive || window.gameOver) {
+            clearInterval(wpmInterval);
             return;
         }
 
         const wpm = getWpm();
         if (wpmTracker) {
-            wpmTracker.textContent = `${wpm}`; // Update WPM in real-time
+            wpmTracker.textContent = `${wpm}`;
         }
     }, 100);
 }
 
-// Track keystrokes for accuracy
+// Track keystrokes for accuracy and start the game
 export function trackKeystrokes(event) {
-    if (window.gameOver) return; // Block keystrokes if game is over
+    if (window.gameOver) return;
 
-    const typedLetter = event.key; // Get the typed letter (assuming only one letter is typed at a time)
+    // Start game on first key press
+    if (!window.gameActive) {
+        window.gameActive = true;
+        window.gameStart = new Date().getTime(); // Start timer
+        startTimer();
+        startWpmTracking();
+    }
 
+    const typedLetter = event.key;
     const currentLetter = document.querySelector('.letter.current');
     const correct = currentLetter && currentLetter.textContent === typedLetter;
 
     if (correct) {
-        correctKeystrokes++; // Increment correct keystrokes
+        correctKeystrokes++;
     }
 
-    totalKeystrokes++; // Increment total keystrokes (correct + incorrect)
-
-    updateAccuracy(); // Update the accuracy display
+    totalKeystrokes++;
+    updateAccuracy();
 }
 
 // Update accuracy
 function updateAccuracy() {
     const accuracyElement = document.getElementById('accuracy');
     const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
-    accuracyElement.textContent = `${accuracy}`; // Display accuracy
+    accuracyElement.textContent = `${accuracy}`;
 }
 
 // Get words per minute (WPM)
 export function getWpm() {
-    if (!window.gameStart) return 0;
+    if (!window.gameActive) return 0;
 
     const words = [...document.querySelectorAll('.word')];
     const lastTypedWord = document.querySelector('.word.current');
@@ -76,11 +81,43 @@ export function getWpm() {
 
     const correctWords = typedWords.filter(word => {
         const letters = [...word.children];
-        const incorrectLetter = letters.some(letter => letter.classList.contains('incorrect'));
-        const correctLetter = letters.some(letter => letter.classList.contains('correct'));
-        return !incorrectLetter && correctLetter;
+        return letters.some(letter => letter.classList.contains('correct')) &&
+               !letters.some(letter => letter.classList.contains('incorrect'));
     });
 
     const timeElapsed = (new Date().getTime() - window.gameStart) / 60000;
     return timeElapsed > 0 ? Math.round(correctWords.length / timeElapsed) : 0;
 }
+
+// Reset game when "Esc" key is pressed
+function resetGameOnEsc(event) {
+    if (event.key === "Escape") {
+        resetGame();
+    }
+}
+
+// Reset game values and wait for typing to start
+function resetGame() {
+    console.log("Resetting game...");
+    correctKeystrokes = 0;
+    totalKeystrokes = 0;
+    window.gameActive = false; // Reset game state
+    window.gameStart = null;
+    window.gameOver = false;
+
+    // Reset WPM, accuracy, and timer
+    document.getElementById('wpmTracker').textContent = '0';
+    document.getElementById('accuracy').textContent = '0';
+    document.getElementById('timer').textContent = '60';
+
+    clearInterval(window.timer); // Stop timer
+    console.log("Timer stopped and game reset.");
+
+    // Move cursor back to the first letter of the first word
+    const firstLetter = document.querySelector('.word .letter');
+    if (firstLetter) {
+        addClass(firstLetter, 'current'); // Ensure the first letter is set as current
+        moveCursor(); // Move cursor to the first letter
+    }
+}
+
