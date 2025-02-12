@@ -1,38 +1,34 @@
-export function typingChecker() {
-    const textContainer = document.getElementById("text-container");
-    const inputArea = document.getElementById("input-area");
+export function startWpmTracking() {
+    if (!window.gameStart) return;
 
-    if (!textContainer || !inputArea) {
-        console.error("Missing text container or input area");
-        return;
-    }
+    // Create an interval to update the WPM every 100 milliseconds (0.1s)
+    const wpmInterval = setInterval(() => {
+        const wpm = getWpm(); // Get the current WPM
+        const wpmTracker = document.getElementById('wpmTracker');
+        if (wpmTracker) {
+            wpmTracker.textContent = `WPM: ${wpm}`; // Update the WPM in the div
+        }
+    }, 100); // Update every 100 milliseconds
 
-    const originalText = textContainer.innerText.trim();
-    textContainer.innerHTML = "";
+    // Optional: Clear the interval when the game ends
+    window.onGameEnd = () => clearInterval(wpmInterval); // You can set this event when the game ends
+}
 
-    originalText.split("").forEach((char) => {
-        const span = document.createElement("span");
-        span.textContent = char;
-        textContainer.appendChild(span);
+export function getWpm() {
+    if (!window.gameStart) return 0;
+
+    const words = [...document.querySelectorAll('.word')];
+    const lastTypedWord = document.querySelector('.word.current');
+    const lastTypedIndex = words.indexOf(lastTypedWord);
+    const typedWords = lastTypedIndex > 0 ? words.slice(0, lastTypedIndex) : [];
+
+    const correctWords = typedWords.filter(word => {
+        const letters = [...word.children];
+        const incorrectLetter = letters.some(letter => letter.classList.contains('incorrect'));
+        const correctLetter = letters.some(letter => letter.classList.contains('correct'));
+        return !incorrectLetter && correctLetter;
     });
 
-    const spans = textContainer.querySelectorAll("span");
-
-    inputArea.addEventListener("input", () => {
-        const typedText = inputArea.value;
-        spans.forEach((span, index) => {
-            if (index < typedText.length) {
-                if (typedText[index] === originalText[index]) {
-                    span.style.backgroundColor = "lightgreen";
-                    span.style.color = "white";
-                } else {
-                    span.style.backgroundColor = "lightcoral";
-                    span.style.color = "white";
-                }
-            } else {
-                span.style.backgroundColor = "transparent";
-                span.style.color = "black";
-            }
-        });
-    });
+    const timeElapsed = (new Date().getTime() - window.gameStart) / 60000;
+    return timeElapsed > 0 ? Math.round(correctWords.length / timeElapsed) : 0;
 }

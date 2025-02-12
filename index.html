@@ -4,34 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Document</title>
+    <title>Typing speed test</title>
 </head>
 <body>
-    <h1>Typing Speed Test</h1>
-    <h2>Test your typing skills!</h2>
-    <div id="stats">
-        <div class="stats-item">
-            <span id="timer" class="large-number">60</span>
-            <p class="stat-label">seconds<span class="unit"></span></p>
+    <main>
+        <h1>Test your typing skills!</h1>
+        <div id="header">
+            <div id="timer">60</div>
+            <div id="wpmTracker">WPM</div>
+            <div id="accuracy">Accuracy</div>
         </div>
-        <div class="stats-item">
-            <span id="wpm" class="large-number">0</span>
-            <p class="stat-label">words/min</p>
+        <div id="game" tabindex="0">
+            <div id="game-container"></div>
+            <div id="words"></div>
+            <div id="cursor"></div>
+            <div id="focus-error">focus</div>
         </div>
-        <div class="stats-item">
-            <span id="accuracy" class="large-number">0</span>
-            <p class="stat-label">% accuracy<span class="unit"></span></p>
+        <div id="buttons">
+            <button id="new-game-button">New Game</button>
         </div>
-    </div>
-    <div id="text-container"></div>
-    <textarea id="input-area" rows="3" placeholder="Start typing"></textarea>
-    <div>
-        <button id="start">Start</button>
-        <button id="stop">Stop</button>
-    </div>
-    <div id="chart-container">
-        <canvas id="progressChart"></canvas>
-    </div>
+    </main>
     <footer>
         <p>Copyright &copy; 2025 | Designed by RM</p>
     </footer>

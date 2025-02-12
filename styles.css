@@ -1,83 +1,35 @@
 body {
-    background-image: url('../images/keyboard3.jpg');
+    background-image: url('../images/keyboard2.jpg');
     background-size: cover;
-    height: 100vh;
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
+main {
+    width: 768px;
+    margin: 50px auto;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+}
 
 h1 {
     color: #fff;
     margin-top: 50px;
-    font-size: 1rem;
-    font-weight: lighter;
-}
-
-h2 {
-    color: #fff;
-    font-size: 3.5rem;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 80px;
-}
-
-#text-container {
-    font-size: 24px;
-    margin: 20px auto;
-    max-width: 700px;
-    min-height: calc(3 * 1.5em);
-    line-height: 1.5em;
-    padding: 10px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
-
-#input-area {
-    width: 700px;
-    font-size: 28px;
-    padding: 10px;
-    margin-top: 10px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-}
-
-#stats {
-    color: #fff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0px 20%;
-}
-
-.stats-item {
-    text-align: center;
-}
-
-.large-number {
     font-size: 2rem;
-    font-weight: bold;
-    display: block;
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    color: white;
-}
-
-.unit {
-    display: inline;
+    font-weight: lighter;
 }
 
 button {
     background-color: white;
     border: none;
     padding: 10px 20px;
+    margin: 30px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
@@ -87,15 +39,9 @@ button:hover {
     background-color: #fff568;
 }
 
-#chart-container {
-    width: 700px;
-    height: 700px;
-    margin: auto;
-    margin-top: 20px;
-    background: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+#timer {
+    color: white;
+    font-size: 3rem;
 }
 
 footer {
@@ -105,26 +51,58 @@ footer {
     font-size: 12px;
 }
 
-#text-container span {
-    padding: 2px 4px;
-    display: inline-block;
-    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+#game-container {
+    font-size: 28px;
 }
 
-@media (max-width: 768px) {
-    #text-container {
-        width: 90%;
-    }
+#game {
+    margin-top: 20px;
+    line-height: 35px;
+    height: calc(3 * 35px);
+    overflow: hidden;
+    position: relative;
+    background-color: #e6f5e8;
+    padding: 5px;
+    border-radius: 5px;
+}
 
-    #input-area {
-        width: 90%;
-    }
 
-    #stats {
-        padding: 0;
-    }
 
-    #chart-container {
-        width: 90%;
+
+.letter.correct {
+    color: rgb(20, 126, 20);
+}
+
+.letter.incorrect {
+    color: rgb(109, 2, 2);
+}
+
+.letter.current {
+    color: #000;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
     }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#cursor {
+    width: 2px;
+    height: 30px;
+    background: black;
+    position: fixed;
+    top: 40%;
+    animation: blink 1s infinite;
+    display: none;
+}
+
+#game:focus #cursor {
+    display: block;
 }
