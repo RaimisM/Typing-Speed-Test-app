@@ -1,17 +1,42 @@
+import { gameOver } from './game.js';
+
+
+export function startTimer() {
+    const timerElement = document.getElementById('timer');
+    let timeLeft = 20;
+
+    timerElement.textContent = timeLeft;
+
+    window.timer = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(window.timer); // Stop timer
+            timerElement.textContent = "0"; // Ensure it shows 0
+            gameOver(); // Call game over
+        }
+    }, 1000);
+}
+
+
+// Live WPM tracking
 export function startWpmTracking() {
     if (!window.gameStart) return;
 
-    // Create an interval to update the WPM every 100 milliseconds (0.1s)
-    const wpmInterval = setInterval(() => {
-        const wpm = getWpm(); // Get the current WPM
-        const wpmTracker = document.getElementById('wpmTracker');
-        if (wpmTracker) {
-            wpmTracker.textContent = `WPM: ${wpm}`; // Update the WPM in the div
-        }
-    }, 100); // Update every 100 milliseconds
+    const wpmTracker = document.getElementById('wpmTracker');
 
-    // Optional: Clear the interval when the game ends
-    window.onGameEnd = () => clearInterval(wpmInterval); // You can set this event when the game ends
+    const wpmInterval = setInterval(() => {
+        if (window.gameOver) {
+            clearInterval(wpmInterval); // Stop WPM updates when game ends
+            return;
+        }
+
+        const wpm = getWpm();
+        if (wpmTracker) {
+            wpmTracker.textContent = `WPM: ${wpm}`;
+        }
+    }, 100);
 }
 
 export function getWpm() {
