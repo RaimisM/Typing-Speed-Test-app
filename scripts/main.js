@@ -19,10 +19,15 @@ async function startGame() {
     newGame();
 }
 
-// Set up "New Game" button
-document.getElementById('new-game-button').addEventListener('click', async function () {
-    gameOver();
-    newGame();
+// Handle 'New Game' button click to reload the page and reset everything
+document.getElementById('new-game-button').addEventListener('click', function () {
+    location.reload(); // Reload the page to restart the game
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        location.reload(); // Reload the page to restart the game
+    }
 });
 
 startGame();

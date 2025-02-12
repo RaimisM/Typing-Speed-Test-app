@@ -12,11 +12,13 @@ export async function newGame() {
     wordsContainer.innerHTML = '';
     window.gameOver = false; // Reset the game over flag
 
+    // Generate 200 random words and add to the game container
     for (let i = 0; i < 200; i++) {
         const word = await randomWord();
         wordsContainer.innerHTML += splitWord(word);
     }
 
+    // Set first word and letter as current
     addClass(document.querySelector('.word'), 'current');
     addClass(document.querySelector('.word .letter'), 'current');
     moveCursor();
@@ -24,10 +26,11 @@ export async function newGame() {
     window.timer = null;
     window.gameStart = null;
 
+    // Start the game on the first keypress
     document.addEventListener('keydown', startGameOnFirstKeypress, { once: true });
 }
 
-// Start the game on first keypress
+// Start the game when the first key is pressed
 function startGameOnFirstKeypress(event) {
     if (!window.gameStart) {
         window.gameStart = new Date().getTime();
@@ -49,7 +52,7 @@ document.addEventListener('keydown', (event) => {
 function handleTyping(event) {
     if (window.gameOver) return; // Ensure typing is blocked when game is over
 
-    trackKeystrokes(event); // Track the keystrokes in typing.js for accuracy
+    trackKeystrokes(event); // Track the keystrokes for accuracy
 }
 
 // Game over function
@@ -98,3 +101,4 @@ export function moveToNextWord() {
         }
     }
 }
+
