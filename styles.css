@@ -40,9 +40,9 @@ button:hover {
     background-color: #fff568;
 }
 
-#timer {
+#label {
     color: white;
-    font-size: 3rem;
+    font-size: 1rem;
 }
 
 footer {

@@ -9,10 +9,19 @@
 <body>
     <main>
         <h1>Test your typing skills!</h1>
-        <div id="header">
-            <div id="timer">60</div>
-            <div id="wpmTracker">WPM</div>
-            <div id="accuracy">Accuracy</div>
+        <div id="header" class="stats">
+            <div class="stat">
+                <div id="timer">60</div>
+                <div id="label">time</div>
+            </div>
+            <div class="stat">
+                <div id="wpmTracker">0</div>
+                <div id="label">words/min</div>
+            </div>
+            <div class="stat">
+                <div id="accuracy">0</div>
+                <div id="label">% accuracy</div>
+            </div>
         </div>
         <div id="game" tabindex="0">
             <div id="game-container"></div>

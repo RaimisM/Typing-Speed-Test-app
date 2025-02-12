@@ -34,7 +34,7 @@ export function startWpmTracking() {
 
         const wpm = getWpm();
         if (wpmTracker) {
-            wpmTracker.textContent = `WPM: ${wpm}`;
+            wpmTracker.textContent = `${wpm}`;
         }
     }, 100);
 }
