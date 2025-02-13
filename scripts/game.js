@@ -100,12 +100,14 @@ export function gameOver() {
 // Move cursor function
 export function moveCursor() {
     const nextLetter = document.querySelector('.letter.current');
-    const nextWord = document.querySelector('.word.current');
     const cursor = document.getElementById('cursor');
-    cursor.style.top = (nextLetter || nextWord).getBoundingClientRect().top + 2 + 'px';
-    cursor.style.left = (nextLetter || nextWord).getBoundingClientRect()[nextLetter ? 'left' : 'right'] + 'px';
-}
 
+    if (cursor && nextLetter) {
+        const rect = nextLetter.getBoundingClientRect();
+        cursor.style.top = `${rect.top}px`;
+        cursor.style.left = `${rect.left}px`;
+    }
+}
 
 // Move to the next word
 // Function to move to the next word (your existing function)
@@ -128,19 +130,27 @@ export function moveToNextWord() {
     }
 }
 
-// Add keydown listener for spacebar press
 document.addEventListener('keydown', function(event) {
-    // Check if spacebar is pressed (key code 32 or event.key === ' ')
-    if (event.key === ' ' || event.keyCode === 32) {
-        // Only move to the next word if `isSpace` is true
-        if (isSpace) {
-            // Mark the incorrect letters and move to the next word
-            document.querySelectorAll('.word.current .letter:not(.correct)')
-                .forEach(letter => addClass(letter, 'incorrect'));
-            moveCursor();  // Move to the next word when spacebar is pressed
+    if (event.key === ' ') {
+        event.preventDefault(); // Prevent actual space input
+
+        const currentWord = document.querySelector('.word.current');
+        if (!currentWord) return; // Avoid errors if no word is found
+
+        // Find remaining untyped letters (letters that are not marked as "correct")
+        const remainingLetters = currentWord.querySelectorAll('.letter:not(.correct)');
+
+        if (remainingLetters.length > 0) {
+            // Only mark letters incorrect if the word is unfinished
+            remainingLetters.forEach(letter => addClass(letter, 'incorrect'));
         }
+
+        moveToNextWord(); // Move to the next word
     }
 });
+
+
+
 
 
 

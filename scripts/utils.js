@@ -1,5 +1,5 @@
 export function addClass(element, name) {
-    if (element) element.classList.add(name);
+    element.classList.add(name);
 }
 
 export function removeClass(element, name) {

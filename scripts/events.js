@@ -54,11 +54,7 @@ document.getElementById('game').addEventListener('keyup', function (event) {
         }
     }
 
-    if (isSpace) {
-        document.querySelectorAll('.word.current .letter:not(.correct)')
-            .forEach(letter => addClass(letter, 'incorrect'));
-        moveCursor();
-    }
+
 
     if (isBackspace) {
     if (currentLetter.classList.contains('incorrect') || currentLetter.classList.contains('correct')) {

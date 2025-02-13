@@ -111,13 +111,6 @@ function resetGame() {
     document.getElementById('timer').textContent = '60';
 
     clearInterval(window.timer); // Stop timer
-    console.log("Timer stopped and game reset.");
 
-    // Move cursor back to the first letter of the first word
-    const firstLetter = document.querySelector('.word .letter');
-    if (firstLetter) {
-        addClass(firstLetter, 'current'); // Ensure the first letter is set as current
-        moveCursor(); // Move cursor to the first letter
-    }
 }
 
