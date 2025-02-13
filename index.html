@@ -32,11 +32,28 @@
         <div id="buttons">
             <button id="new-game-button">New Game</button>
         </div>
+        <div id="metrics-data">
+            <div>
+                <canvas id="metricsChart"></canvas>
+            </div>
+            <table id="metricsTable">
+                <thead>
+                    <tr>
+                        <th>Attempt</th>
+                        <th>Speed (WPM)</th>
+                        <th>Accuracy (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="metricsTableBody"></tbody>
+            </table>
+            <div id="improvement"></div>
+        </div>
     </main>
     <footer>
         <p>Copyright &copy; 2025 | Designed by RM</p>
     </footer>
 
-    <script type="module" src="scripts/main.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="scripts/typing.js"></script>
+    <script type="module" src="scripts/main.js"></script> </body>
 </html>

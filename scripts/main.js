@@ -2,6 +2,7 @@ import { newGame, gameOver, moveCursor } from './game.js';
 import { randomWord, splitWord } from './utils.js';
 import './events.js';
 
+
 const wordsContainer = document.getElementById('game-container');
 
 // Function to generate words and save session

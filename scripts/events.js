@@ -3,7 +3,7 @@ import { gameOver, gameTimer, moveCursor, moveToNextWord } from './game.js';
 
 document.getElementById('game').addEventListener('keyup', function (event) {
     const key = event.key.toLowerCase();
-    const currentWord = document.querySelector('.word.current');
+    let currentWord = document.querySelector('.word.current');
     let currentLetter = document.querySelector('.letter.current');
 
     if (!currentLetter) return;
@@ -43,6 +43,9 @@ document.getElementById('game').addEventListener('keyup', function (event) {
             if (nextLetter) {
                 addClass(nextLetter, 'current');
             } else {
+                const space = document.createElement('span');
+                space.classList.add('space');
+                space.textContent = ' ';
                 console.log('Word completed');
             }
         } else {
@@ -62,21 +65,26 @@ document.getElementById('game').addEventListener('keyup', function (event) {
         removeClass(currentLetter, 'correct');
     }
 
+    // Remove 'current' class from the current letter
     removeClass(currentLetter, 'current');
+
+    // Find and remove the 'incorrect' letter if it exists
     const incorrectLetter = currentLetter.parentNode.querySelector('.incorrect.letter.added');
     if (incorrectLetter) {
         incorrectLetter.remove();
     }
 
-    // Move cursor to the previous letter
-    let prevLetter = currentLetter;
+    // Move the cursor to the previous letter or word
+    let prevLetter = currentLetter.previousElementSibling;
     if (prevLetter) {
         addClass(prevLetter, 'current');
     } else {
         let prevWord = currentWord.previousElementSibling;
         if (prevWord) {
+            // Move to the previous word
             removeClass(currentWord, 'current');
             addClass(prevWord, 'current');
+            // Move to the last letter of the previous word
             let lastLetter = prevWord.querySelector('.letter:last-child');
             if (lastLetter) {
                 addClass(lastLetter, 'current');
@@ -84,7 +92,8 @@ document.getElementById('game').addEventListener('keyup', function (event) {
         }
     }
 }
-    moveCursor();
+moveCursor();
+
 
     // Scrolling text
     if (currentWord && currentWord.getBoundingClientRect().top > 250) {

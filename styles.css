@@ -1,5 +1,5 @@
 body {
-    background-image: url('../images/keyboard2.jpg');
+    background-image: url('../images/keyboard3.jpg');
     background-size: cover;
     height: 100%;
     margin: 0;
@@ -106,4 +106,15 @@ footer {
 
 #game:focus #cursor {
     display: block;
+}
+
+#metrics-data {
+    background-color: #e6f5e8;
+    opacity: 0.8;
+}
+
+ #metricsTable {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
 }

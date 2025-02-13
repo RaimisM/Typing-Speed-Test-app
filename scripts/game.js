@@ -84,22 +84,20 @@ function handleTyping(event) {
 
 // Game over function
 export function gameOver() {
-    console.log("Game over triggered!"); // Debugging
     clearInterval(window.timer);
-    window.gameOver = true; // Set game over flag
+    window.gameOver = true;
 
     addClass(document.getElementById('game'), 'over');
 
     const wpm = getWpm();
     document.getElementById('wpmTracker').textContent = `${wpm}`;
-    document.getElementById('timer').textContent = "0"; // Ensure timer shows 0
-
-    console.log("Game Over flag set:", window.gameOver); // Check if flag is set
+    document.getElementById('timer').textContent = "0";
 }
 
 // Move cursor function
 export function moveCursor() {
     const nextLetter = document.querySelector('.letter.current');
+    const nextWord = document.querySelector('.word.current');
     const cursor = document.getElementById('cursor');
 
     if (cursor && nextLetter) {
@@ -110,7 +108,6 @@ export function moveCursor() {
 }
 
 // Move to the next word
-// Function to move to the next word (your existing function)
 export function moveToNextWord() {
     const currentWord = document.querySelector('.word.current');
     if (!currentWord) return;
@@ -132,10 +129,8 @@ export function moveToNextWord() {
 
 document.addEventListener('keydown', function(event) {
     if (event.key === ' ') {
-        event.preventDefault(); // Prevent actual space input
 
         const currentWord = document.querySelector('.word.current');
-        if (!currentWord) return; // Avoid errors if no word is found
 
         // Find remaining untyped letters (letters that are not marked as "correct")
         const remainingLetters = currentWord.querySelectorAll('.letter:not(.correct)');
