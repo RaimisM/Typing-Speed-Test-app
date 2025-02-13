@@ -93,12 +93,4 @@ document.getElementById('game').addEventListener('keyup', function (event) {
     }
 }
 moveCursor();
-
-
-    // Scrolling text
-    if (currentWord && currentWord.getBoundingClientRect().top > 250) {
-        const wordsContainer = document.getElementById('game-container');
-        const margin = parseInt(wordsContainer.style.marginTop || '0px');
-        wordsContainer.style.marginTop = (margin - 35) + 'px';
-    }
 });

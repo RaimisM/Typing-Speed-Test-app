@@ -26,6 +26,7 @@ function createChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     title: {
@@ -74,7 +75,6 @@ function displayMetricsTable() {
 }
 
 function displayImprovement(currentMetrics) {
-    const improvementDiv = document.getElementById('improvement');
     if (metricsData.length > 1) {
         const previousMetrics = metricsData[metricsData.length - 2];
         const wpmDiff = currentMetrics.wpm - previousMetrics.wpm;
@@ -88,7 +88,7 @@ function displayImprovement(currentMetrics) {
         } else {
             message += `WPM 0`;
         }
-         message += ", ";
+        message += ", ";
         if (accuracyDiff > 0) {
             message += `Accuracy +${accuracyDiff.toFixed(2)}%`;
         } else if (accuracyDiff < 0) {
@@ -96,11 +96,11 @@ function displayImprovement(currentMetrics) {
         } else {
             message += `Accuracy 0%`;
         }
-        improvementDiv.textContent = message;
 
-    } else {
-        improvementDiv.textContent = ""; // Clear on first attempt
+        alert(message); // Show the message in an alert box
+
     }
+    // No "else" needed. If it's the first attempt, no improvement to show.
 }
 
 createChart();
@@ -118,7 +118,7 @@ let wpmInterval = null;
 
 export function startTimer() {
     const timerElement = document.getElementById('timer');
-    let timeLeft = 60; // Or 60, as you prefer
+    let timeLeft = 20; // Or 60, as you prefer
     timerElement.textContent = timeLeft;
 
     window.timer = setInterval(() => {
@@ -149,6 +149,7 @@ export function startWpmTracking() {
 }
 
 export function trackKeystrokes(event) {
+    event.stopPropagation(); // Prevent interference with other event listeners
     if (window.gameOver) return;
 
     if (!window.gameActive) {
@@ -167,7 +168,18 @@ export function trackKeystrokes(event) {
     }
     totalKeystrokes++;
     updateAccuracy();
+
+    // ✅ Scrolling Logic: Moves text up when the current word goes beyond a certain point
+    const currentWord = document.querySelector('.word.current');
+    if (currentWord && currentWord.getBoundingClientRect().top > 250) {
+        if (!window.gameOver) {
+            const wordsContainer = document.getElementById('game-container');
+            const computedMargin = parseInt(getComputedStyle(wordsContainer).marginTop, 10) || 0;
+            wordsContainer.style.marginTop = (computedMargin - 35) + 'px';
+        }
+    }
 }
+
 
 function updateAccuracy() {
     const accuracyElement = document.getElementById('accuracy');

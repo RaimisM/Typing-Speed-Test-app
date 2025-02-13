@@ -33,19 +33,21 @@
             <button id="new-game-button">New Game</button>
         </div>
         <div id="metrics-data">
-            <div>
+            <div id="metricsChartContainer">
                 <canvas id="metricsChart"></canvas>
             </div>
-            <table id="metricsTable">
-                <thead>
-                    <tr>
-                        <th>Attempt</th>
-                        <th>Speed (WPM)</th>
-                        <th>Accuracy (%)</th>
-                    </tr>
-                </thead>
-                <tbody id="metricsTableBody"></tbody>
-            </table>
+            <div id="table-container">
+                <table id="metricsTable">
+                    <thead>
+                        <tr>
+                            <th>Attempt</th>
+                            <th>Speed (WPM)</th>
+                            <th>Accuracy (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metricsTableBody"></tbody>
+                </table>
+            </div>
             <div id="improvement"></div>
         </div>
     </main>

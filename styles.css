@@ -54,6 +54,10 @@ footer {
 
 #game-container {
     font-size: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: margin-top 0.5s;
+
 }
 
 #game {
@@ -113,8 +117,46 @@ footer {
     opacity: 0.8;
 }
 
- #metricsTable {
-    margin-top: 20px;
+
+
+#table-container {
+    height: 150px; /* Adjust as needed */
+    overflow-y: auto; /* Enables scrolling */
+    display: block; /* Makes sure the table can be scrolled */
+    border: 1px solid #ccc; /* Optional: Adds border for a clean look */
+}
+
+#metricsTable {
     width: 100%;
     border-collapse: collapse;
 }
+
+#metricsTable thead {
+    display: table; /* Keeps the header fixed */
+    width: 100%;
+}
+
+#metricsTable tbody {
+    display: block; /* Allows scrolling */
+    width: 100%;
+    overflow-y: auto;
+}
+
+#metricsTable th, #metricsTable td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#metricsTable tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+
+
+#metricsChartContainer {
+    height: 250px; /* Adjust this height */
+}
+
