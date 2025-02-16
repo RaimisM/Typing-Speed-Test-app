@@ -15,14 +15,19 @@ export async function newGame() {
 
     let words = []; // Store words for saving
 
-    // Generate 200 random word
+    // Generate new words every time
     for (let i = 0; i < 200; i++) {
         const word = await randomWord();
         words.push(word);
         wordsContainer.innerHTML += splitWord(word);
     }
 
-    localStorage.setItem("savedWords", JSON.stringify(words));
+    // Save words and initial state in sessionStorage
+    sessionStorage.setItem("initialWords", JSON.stringify(words));
+    sessionStorage.setItem("initialTimer", "60");
+    sessionStorage.setItem("initialAccuracy", "0");
+
+    localStorage.setItem("savedWords", JSON.stringify(words)); // Keep in localStorage
 
     // Set first word and letter as current
     addClass(document.querySelector('.word'), 'current');
@@ -32,13 +37,73 @@ export async function newGame() {
     window.timer = null;
     window.gameStart = null;
 
-    console.log("Timer state before adding event listener:", window.timer);
-
-    // Start the game on the first press
+    console.log("New game started with fresh words.");
     document.addEventListener('keydown', startGameOnFirstKeypress, { once: true });
-
-    console.log("Game initialized, awaiting first key press...");
 }
+
+// Function to reset the game, restoring words if Escape key is pressed
+function resetGame() {
+    console.log("Resetting game...");
+    let isTypingStarted = false; // Flag to track if typing has started
+
+
+    // Stop the current timer
+    if (window.timer) {
+        clearInterval(window.timer);
+        window.timer = null; // Reset timer reference
+        document.getElementById('timer').textContent = "60"; // Reset timer to new game value
+    }
+
+    // Reset WPM display
+    document.getElementById('wpmTracker').textContent = "0";
+
+    // Reset accuracy
+    sessionStorage.setItem("initialAccuracy", "0");
+    document.getElementById('accuracy').textContent = "0"; 
+
+    // Retrieve saved words from sessionStorage (from previous game session)
+    const savedWords = JSON.parse(sessionStorage.getItem('initialWords')) || [];
+
+    if (savedWords.length > 0) {
+        wordsContainer.innerHTML = ''; // Clear existing words
+
+        // Restore previous words
+        savedWords.forEach(word => {
+            wordsContainer.innerHTML += splitWord(word);
+        });
+
+        // Set first word and letter as current
+        addClass(document.querySelector('.word'), 'current');
+        addClass(document.querySelector('.word .letter'), 'current');
+
+        // Reset the cursor position
+        moveCursor();
+
+        console.log("Game reset with previous session words.");
+    } else {
+        console.log("No previous words found. Starting a new game...");
+        newGame();
+    }
+
+    // Reset typing state
+    isTypingStarted = false;
+    window.gameOver = false;
+    window.gameStart = null;
+
+    console.log("Game fully reset: Timer, WPM, Accuracy, Cursor.");
+}
+
+
+
+// Listen for 'Escape' key to reset game with previous words
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        resetGame(); 
+        restoreMetrics();
+    }
+});
+
+
 
 
 

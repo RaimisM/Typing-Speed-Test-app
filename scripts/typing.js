@@ -1,216 +1,147 @@
+// get previously saved metrics from localStorage
 let metricsData = JSON.parse(localStorage.getItem('metrics')) || [];
 let chart;
 
-function createChart() {
-    const ctx = document.getElementById('metricsChart').getContext('2d');
+const getElement = (id) => document.getElementById(id);
 
+// Create chart based on metrics data
+function createChart() {
+    const ctx = getElement('metricsChart').getContext('2d'); // Get canvas context for the chart
     chart = new Chart(ctx, {
-        type: 'line',
+        type: 'line', // Chart type
         data: {
-            labels: metricsData.map((item, index) => `Attempt ${index + 1}`),
-            datasets: [{
-                label: 'Speed (WPM)',
-                data: metricsData.map(item => item.wpm),
-                borderColor: 'blue',
-                fill: false
-            },
-            {
-                label: 'Accuracy (%)',
-                data: metricsData.map(item => item.accuracy),
-                borderColor: 'red',
-                fill: false
-            }]
+            labels: metricsData.map((_, index) => `Attempt ${index + 1}`), // Labels for chart
+            datasets: [
+                { label: 'Speed (WPM)', data: metricsData.map(item => item.wpm), borderColor: 'blue', fill: false },
+                { label: 'Accuracy (%)', data: metricsData.map(item => item.accuracy), borderColor: 'red', fill: false }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Attempt'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Value'
-                    },
-                    beginAtZero: true
-                }
+                x: { title: { display: true, text: 'Attempt' } }, // X title
+                y: { title: { display: true, text: 'Value' }, beginAtZero: true } // Y title
             }
         }
     });
 }
 
-function updateChart() {
-    if (!chart) {
-        createChart();
-        return;
-    }
-
-    chart.data.labels = metricsData.map((item, index) => `Attempt ${index + 1}`);
+// Update chart
+export function updateChart() {
+    if (!chart) return createChart(); // Create chart if it doesn't exist
+    chart.data.labels = metricsData.map((_, index) => `Attempt ${index + 1}`);
     chart.data.datasets[0].data = metricsData.map(item => item.wpm);
     chart.data.datasets[1].data = metricsData.map(item => item.accuracy);
     chart.update();
 }
 
-function displayMetricsTable() {
-    const tableBody = document.getElementById('metricsTableBody');
-    tableBody.innerHTML = '';
-
-    metricsData.forEach((item, index) => {
-        const row = tableBody.insertRow();
-        const attemptCell = row.insertCell();
-        const wpmCell = row.insertCell();
-        const accuracyCell = row.insertCell();
-
-        attemptCell.textContent = index + 1;
-        wpmCell.textContent = item.wpm;
-        accuracyCell.textContent = item.accuracy;
-    });
+// Display data in a table format
+export function displayMetricsTable() {
+    const tableBody = getElement('metricsTableBody');
+    tableBody.innerHTML = metricsData.map((item, index) =>
+        `<tr><td>${index + 1}</td><td>${item.wpm}</td><td>${item.accuracy}</td></tr>`
+    ).join('');
 }
 
+// Display improvement in performance
 function displayImprovement(currentMetrics) {
-    if (metricsData.length > 1) {
-        const previousMetrics = metricsData[metricsData.length - 2];
-        const wpmDiff = currentMetrics.wpm - previousMetrics.wpm;
-        const accuracyDiff = currentMetrics.accuracy - previousMetrics.accuracy;
-
-        let message = "Improvement: ";
-        if (wpmDiff > 0) {
-            message += `WPM +${wpmDiff.toFixed(2)}`;
-        } else if (wpmDiff < 0) {
-            message += `WPM ${wpmDiff.toFixed(2)}`;
-        } else {
-            message += `WPM 0`;
-        }
-        message += ", ";
-        if (accuracyDiff > 0) {
-            message += `Accuracy +${accuracyDiff.toFixed(2)}%`;
-        } else if (accuracyDiff < 0) {
-            message += `Accuracy ${accuracyDiff.toFixed(2)}%`;
-        } else {
-            message += `Accuracy 0%`;
-        }
-
-        alert(message); // Show the message in an alert box
-
-    }
+    if (metricsData.length < 2) return; // No improvement if less than 2 attempts
+    const prevMetrics = metricsData[metricsData.length - 2];
+    const changes = [
+        `WPM ${prevMetrics.wpm < currentMetrics.wpm ? '+' : ''}${(currentMetrics.wpm - prevMetrics.wpm).toFixed(2)}`,
+        `Accuracy ${prevMetrics.accuracy < currentMetrics.accuracy ? '+' : ''}${(currentMetrics.accuracy - prevMetrics.accuracy).toFixed(2)}%`
+    ];
+    alert(`Improvement: ${changes.join(', ')}`); // Alert the improvement
 }
 
-createChart();
+createChart(); // Show chart when page loads
 displayMetricsTable();
 
+import { gameOver } from './game.js';
 
-// Typing game logic and functions
-import { gameOver } from './game.js'; // Import gameOver
+let correctKeystrokes = 0; // Track correct keystrokes
+let totalKeystrokes = 0; // Track total keystrokes
+window.gameActive = false; // Check if the game is active
+window.gameStart = null; // Start time of the game
+let wpmInterval = null; // Store WPM
 
-let correctKeystrokes = 0;
-let totalKeystrokes = 0;
-window.gameActive = false;
-window.gameStart = null;
-let wpmInterval = null;
-
+// Start the timer for the game
 export function startTimer() {
-    const timerElement = document.getElementById('timer');
-    let timeLeft = 60; // time is set here
+    let timeLeft = 60; // main timer
+    const timerElement = getElement('timer');
     timerElement.textContent = timeLeft;
+    clearInterval(window.timer);
 
     window.timer = setInterval(() => {
-        timeLeft--;
-        timerElement.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-            clearInterval(window.timer);
-            timerElement.textContent = "0";
-            storeMetrics(correctKeystrokes, totalKeystrokes); // Call storeMetrics
-            gameOver();
+        if (--timeLeft <= 0) {
+            clearInterval(window.timer); // Stop timer when time is up
+            storeMetrics(correctKeystrokes, totalKeystrokes); // Store the metrics when game ends
+            gameOver(); // Trigger game over logic
         }
+        timerElement.textContent = timeLeft;
     }, 1000);
 }
 
+// Tracking WPM
 export function startWpmTracking() {
-    const wpmTracker = document.getElementById('wpmTracker');
+    const wpmTracker = getElement('wpmTracker');
+    clearInterval(wpmInterval);
     wpmInterval = setInterval(() => {
-        if (!window.gameActive || window.gameOver) {
-            clearInterval(wpmInterval);
-            return;
-        }
-        const wpm = getWpm(); // Call imported getWpm
-        if (wpmTracker) {
-            wpmTracker.textContent = `${wpm}`;
-        }
+        if (!window.gameActive) return clearInterval(wpmInterval); // Stop tracking if game is inactive
+        wpmTracker.textContent = getWpm();
     }, 100);
 }
 
+// Track keystrokes during the game
 export function trackKeystrokes(event) {
-    event.stopPropagation(); // Prevent interference with other event listeners
-    if (window.gameOver) return;
-
+    if (window.gameOver) return; // Prevent tracking if the game is over
     if (!window.gameActive) {
         window.gameActive = true;
-        window.gameStart = new Date().getTime();
+        window.gameStart = Date.now();
         startTimer();
         startWpmTracking();
     }
 
-    const typedLetter = event.key;
     const currentLetter = document.querySelector('.letter.current');
-    const correct = currentLetter && currentLetter.textContent === typedLetter;
-
-    if (correct) {
-        correctKeystrokes++;
-    }
+    if (currentLetter && currentLetter.textContent === event.key) correctKeystrokes++;
     totalKeystrokes++;
     updateAccuracy();
-
-    // Scrolling
+    // Adjust the game container based on word position
     const currentWord = document.querySelector('.word.current');
-    if (currentWord && currentWord.getBoundingClientRect().top > 250) {
-        if (!window.gameOver) {
-            const wordsContainer = document.getElementById('game-container');
-            const computedMargin = parseInt(getComputedStyle(wordsContainer).marginTop, 10) || 0;
-            wordsContainer.style.marginTop = (computedMargin - 35) + 'px';
-        }
+    if (currentWord?.getBoundingClientRect().top > 250) {
+        getElement('game-container').style.marginTop = 
+            `${parseInt(getComputedStyle(getElement('game-container')).marginTop, 10) - 35}px`;
     }
-}
-
-
-function updateAccuracy() {
-    const accuracyElement = document.getElementById('accuracy');
-    const accuracy = totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
-    accuracyElement.textContent = `${accuracy}`;
-}
-
-export function getWpm() {
-    if (!window.gameActive) return 0;
-    const words = [...document.querySelectorAll('.word')];
-    const lastTypedWord = document.querySelector('.word.current');
-    const lastTypedIndex = words.indexOf(lastTypedWord);
-    const typedWords = lastTypedIndex > 0 ? words.slice(0, lastTypedIndex) : [];
-
-    const correctWords = typedWords.filter(word => {
-        const letters = [...word.children];
-        return letters.some(letter => letter.classList.contains('correct')) &&
-               !letters.some(letter => letter.classList.contains('incorrect'));
-    });
-
-    const timeElapsed = (new Date().getTime() - window.gameStart) / 60000;
-    return timeElapsed > 0 ? Math.round(correctWords.length / timeElapsed) : 0;
 }
 
 document.addEventListener('keydown', trackKeystrokes);
 
+// Update the accuracy display
+export function updateAccuracy() {
+    getElement('accuracy').textContent = 
+        totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+}
+
+// Calculate WPM
+export function getWpm() {
+    if (!window.gameActive) return 0;
+    const words = [...document.querySelectorAll('.word')];
+    const typedWords = words.slice(0, words.indexOf(document.querySelector('.word.current')));
+    const correctWords = typedWords.filter(word =>
+        [...word.children].some(letter => letter.classList.contains('correct')) &&
+        ![...word.children].some(letter => letter.classList.contains('incorrect'))
+    );
+    return Math.round(correctWords.length / ((Date.now() - window.gameStart) / 60000)) || 0;
+}
+
+// Store data to localStorage and update
 export function storeMetrics(correct, total) {
-    const wpm = getWpm();
-    const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-    const newMetrics = { wpm, accuracy };
-    metricsData.push(newMetrics);
-    localStorage.setItem('metrics', JSON.stringify(metricsData));
-
-    updateChart();
-    displayMetricsTable();
-    displayImprovement(newMetrics);
+    const newMetrics = { wpm: getWpm(), accuracy: total > 0 ? Math.round((correct / total) * 100) : 0 };
+    metricsData.push(newMetrics); // Add new data to the array
+    localStorage.setItem('metrics', JSON.stringify(metricsData)); // Save data to localStorage
+    updateAccuracy(); // Update accuracy display
+    updateChart(); // Update the chart
+    displayMetricsTable(); // Update the metrics table
+    displayImprovement(newMetrics); // Display improvement in performance
 }
