@@ -1,6 +1,3 @@
-// combined.js (or whatever you name the file)
-
-// Chart.js initialization and functions
 let metricsData = JSON.parse(localStorage.getItem('metrics')) || [];
 let chart;
 
@@ -100,7 +97,6 @@ function displayImprovement(currentMetrics) {
         alert(message); // Show the message in an alert box
 
     }
-    // No "else" needed. If it's the first attempt, no improvement to show.
 }
 
 createChart();
@@ -118,7 +114,7 @@ let wpmInterval = null;
 
 export function startTimer() {
     const timerElement = document.getElementById('timer');
-    let timeLeft = 20; // Or 60, as you prefer
+    let timeLeft = 60; // time is set here
     timerElement.textContent = timeLeft;
 
     window.timer = setInterval(() => {
@@ -169,7 +165,7 @@ export function trackKeystrokes(event) {
     totalKeystrokes++;
     updateAccuracy();
 
-    // ✅ Scrolling Logic: Moves text up when the current word goes beyond a certain point
+    // Scrolling
     const currentWord = document.querySelector('.word.current');
     if (currentWord && currentWord.getBoundingClientRect().top > 250) {
         if (!window.gameOver) {

@@ -1,5 +1,5 @@
 import { addClass, removeClass, randomWord, splitWord } from './utils.js';
-import { getWpm, startTimer, startWpmTracking, trackKeystrokes } from './typing.js'; // Make sure trackKeystrokes is imported
+import { getWpm, startTimer, startWpmTracking, trackKeystrokes } from './typing.js';
 
 const wordsContainer = document.getElementById('game-container');
 
@@ -11,18 +11,17 @@ window.gameOver = false;
 export async function newGame() {
     console.log("Starting a new game...");
     wordsContainer.innerHTML = '';
-    window.gameOver = false; // Reset the game over flag
+    window.gameOver = false;
 
     let words = []; // Store words for saving
 
-    // Generate 200 random words and add to the game container
+    // Generate 200 random word
     for (let i = 0; i < 200; i++) {
         const word = await randomWord();
         words.push(word);
         wordsContainer.innerHTML += splitWord(word);
     }
 
-    // Save words session
     localStorage.setItem("savedWords", JSON.stringify(words));
 
     // Set first word and letter as current
@@ -33,9 +32,9 @@ export async function newGame() {
     window.timer = null;
     window.gameStart = null;
 
-    console.log("Timer state before adding event listener:", window.timer); // Log timer before adding listener
+    console.log("Timer state before adding event listener:", window.timer);
 
-    // Start the game on the first keypress
+    // Start the game on the first press
     document.addEventListener('keydown', startGameOnFirstKeypress, { once: true });
 
     console.log("Game initialized, awaiting first key press...");
@@ -51,13 +50,11 @@ function startGameOnFirstKeypress(event) {
         console.log("First key press detected:", event.key);
         window.gameActive = true;
         window.gameStart = new Date().getTime();
-        
-        // Check if the timer is already running before starting it
+
         console.log("Timer before start:", window.timer);
-        
-        if (!window.timer) {  // Only start the timer if it's not already running
+        if (!window.timer) {
             console.log("Starting timer...");
-            startTimer();   // Start the timer
+            startTimer();
             startWpmTracking();
         }
     }
@@ -69,17 +66,17 @@ function startGameOnFirstKeypress(event) {
 // Prevent typing if the game is over
 document.addEventListener('keydown', (event) => {
     if (window.gameOver) {
-        event.preventDefault(); // Stop the key press
+        event.preventDefault();
         return;
     }
 
-    handleTyping(event); // Call the function that processes typing
+    handleTyping(event);
 });
 
 function handleTyping(event) {
-    if (window.gameOver) return; // Ensure typing is blocked when game is over
+    if (window.gameOver) return;
 
-    trackKeystrokes(event); // Track the keystrokes for accuracy
+    trackKeystrokes(event);
 }
 
 // Game over function
@@ -100,10 +97,16 @@ export function moveCursor() {
     const nextWord = document.querySelector('.word.current');
     const cursor = document.getElementById('cursor');
 
+    console.log(cursor, nextLetter);
     if (cursor && nextLetter) {
         const rect = nextLetter.getBoundingClientRect();
         cursor.style.top = `${rect.top}px`;
         cursor.style.left = `${rect.left}px`;
+    } else {
+        const rect = nextWord.getBoundingClientRect();
+        console.log(rect);
+        cursor.style.top = `${rect.top}px`;
+        cursor.style.left = `${rect.right}px`;
     }
 }
 
@@ -140,7 +143,7 @@ document.addEventListener('keydown', function(event) {
             remainingLetters.forEach(letter => addClass(letter, 'incorrect'));
         }
 
-        moveToNextWord(); // Move to the next word
+        moveToNextWord();
     }
 });
 

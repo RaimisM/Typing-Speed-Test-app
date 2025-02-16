@@ -25,7 +25,6 @@ async function generateWords() {
 async function startGame() {
     await generateWords();
     newGame();
-    moveCursor();
 }
 
 // Handle 'New Game' button click to reload the page and reset everything
@@ -40,26 +39,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Restore session when Escape is pressed
-document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        let savedWords = localStorage.getItem("savedWords");
-        if (savedWords) {
-            wordsContainer.innerHTML = ''; // Clear existing words
-            let words = JSON.parse(savedWords);
 
-            // Rebuild words on screen
-            words.forEach(word => {
-                wordsContainer.innerHTML += splitWord(word);
-            });
-
-            moveCursor(); // Move cursor to start
-            console.log("Session restored!");
-        } else {
-            console.log("No saved session found!");
-        }
-    }
-});
 
 
 

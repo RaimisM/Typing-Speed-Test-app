@@ -10,7 +10,6 @@ document.getElementById('game').addEventListener('keyup', function (event) {
 
     const expected = currentLetter.innerHTML.toLowerCase();
     const isLetter = key.length === 1 && key !== ' ';
-    const isSpace = key === ' ';
     const isBackspace = key === 'backspace';
 
     if (document.getElementById('game').classList.contains('over')) {
@@ -19,7 +18,7 @@ document.getElementById('game').addEventListener('keyup', function (event) {
 
     console.log({ key, expected });
 
-    if (!window.timer && (isLetter || isSpace || isBackspace)) {
+    if (!window.timer && (isLetter || isBackspace)) {
         window.gameStart = new Date().getTime();
 
         window.timer = setInterval(() => {
@@ -60,37 +59,49 @@ document.getElementById('game').addEventListener('keyup', function (event) {
 
 
     if (isBackspace) {
-    if (currentLetter.classList.contains('incorrect') || currentLetter.classList.contains('correct')) {
-        removeClass(currentLetter, 'incorrect');
-        removeClass(currentLetter, 'correct');
-    }
-
-    // Remove 'current' class from the current letter
-    removeClass(currentLetter, 'current');
-
-    // Find and remove the 'incorrect' letter if it exists
-    const incorrectLetter = currentLetter.parentNode.querySelector('.incorrect.letter.added');
-    if (incorrectLetter) {
-        incorrectLetter.remove();
-    }
-
-    // Move the cursor to the previous letter or word
-    let prevLetter = currentLetter.previousElementSibling;
-    if (prevLetter) {
-        addClass(prevLetter, 'current');
-    } else {
-        let prevWord = currentWord.previousElementSibling;
-        if (prevWord) {
-            // Move to the previous word
-            removeClass(currentWord, 'current');
-            addClass(prevWord, 'current');
-            // Move to the last letter of the previous word
-            let lastLetter = prevWord.querySelector('.letter:last-child');
-            if (lastLetter) {
-                addClass(lastLetter, 'current');
+        if (currentLetter.classList.contains('incorrect') || currentLetter.classList.contains('correct')) {
+            removeClass(currentLetter, 'incorrect');
+            removeClass(currentLetter, 'correct');
+        }
+    
+        // Find and remove the last incorrect letter if it exists
+        const incorrectLetter = currentLetter.parentNode.querySelector('.incorrect.letter.added');
+        if (incorrectLetter) {
+            let prevLetter = incorrectLetter.previousElementSibling;
+            incorrectLetter.remove();
+    
+            // Ensure the cursor stays on the current position after deletion
+            if (prevLetter) {
+                addClass(prevLetter, 'current');
+            } else {
+                addClass(currentLetter, 'current'); // Keep cursor on current letter
+            }
+    
+            return; // Prevents further cursor movement in this case
+        }
+    
+        // Normal backspace behavior (if no incorrect letter was removed)
+        removeClass(currentLetter, 'current');
+    
+        let prevLetter = currentLetter.previousElementSibling;
+        if (prevLetter) {
+            addClass(prevLetter, 'current');
+        } else {
+            let prevWord = currentWord.previousElementSibling;
+            if (prevWord) {
+                // Move to the previous word
+                removeClass(currentWord, 'current');
+                addClass(prevWord, 'current');
+    
+                // Move to the last letter of the previous word
+                let lastLetter = prevWord.querySelector('.letter:last-child');
+                if (lastLetter) {
+                    addClass(lastLetter, 'current');
+                }
             }
         }
     }
-}
-moveCursor();
+    moveCursor();
+    
+    
 });
