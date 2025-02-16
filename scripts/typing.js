@@ -86,10 +86,14 @@ export function startTimer() {
 // Tracking WPM
 export function startWpmTracking() {
     const wpmTracker = getElement('wpmTracker');
-    clearInterval(wpmInterval);
+    clearInterval(wpmInterval); // Clear any existing interval
+
     wpmInterval = setInterval(() => {
-        if (!window.gameActive) return clearInterval(wpmInterval); // Stop tracking if game is inactive
-        wpmTracker.textContent = getWpm();
+        if (!window.gameActive || window.gameOver) { // Stop tracking if the game is over
+            clearInterval(wpmInterval);
+            return;
+        }
+        wpmTracker.textContent = getWpm(); // Update WPM display
     }, 100);
 }
 
