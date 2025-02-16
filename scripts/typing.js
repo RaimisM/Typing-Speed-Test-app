@@ -6,11 +6,11 @@ const getElement = (id) => document.getElementById(id);
 
 // Create chart based on metrics data
 function createChart() {
-    const ctx = getElement('metricsChart').getContext('2d'); // Get canvas context for the chart
+    const ctx = getElement('metricsChart').getContext('2d');
     chart = new Chart(ctx, {
-        type: 'line', // Chart type
+        type: 'line',
         data: {
-            labels: metricsData.map((_, index) => `Attempt ${index + 1}`), // Labels for chart
+            labels: metricsData.map((_, index) => `Attempt ${index + 1}`),
             datasets: [
                 { label: 'Speed (WPM)', data: metricsData.map(item => item.wpm), borderColor: 'blue', fill: false },
                 { label: 'Accuracy (%)', data: metricsData.map(item => item.accuracy), borderColor: 'red', fill: false }
@@ -20,8 +20,8 @@ function createChart() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: { title: { display: true, text: 'Attempt' } }, // X title
-                y: { title: { display: true, text: 'Value' }, beginAtZero: true } // Y title
+                x: { title: { display: true, text: 'Attempt' } },
+                y: { title: { display: true, text: 'Value' }, beginAtZero: true }
             }
         }
     });
@@ -29,7 +29,7 @@ function createChart() {
 
 // Update chart
 export function updateChart() {
-    if (!chart) return createChart(); // Create chart if it doesn't exist
+    if (!chart) return createChart();
     chart.data.labels = metricsData.map((_, index) => `Attempt ${index + 1}`);
     chart.data.datasets[0].data = metricsData.map(item => item.wpm);
     chart.data.datasets[1].data = metricsData.map(item => item.accuracy);
@@ -46,38 +46,38 @@ export function displayMetricsTable() {
 
 // Display improvement in performance
 function displayImprovement(currentMetrics) {
-    if (metricsData.length < 2) return; // No improvement if less than 2 attempts
+    if (metricsData.length < 2) return;
     const prevMetrics = metricsData[metricsData.length - 2];
     const changes = [
         `WPM ${prevMetrics.wpm < currentMetrics.wpm ? '+' : ''}${(currentMetrics.wpm - prevMetrics.wpm).toFixed(2)}`,
         `Accuracy ${prevMetrics.accuracy < currentMetrics.accuracy ? '+' : ''}${(currentMetrics.accuracy - prevMetrics.accuracy).toFixed(2)}%`
     ];
-    alert(`Improvement: ${changes.join(', ')}`); // Alert the improvement
+    alert(`Improvement: ${changes.join(', ')}`);
 }
 
-createChart(); // Show chart when page loads
+createChart();
 displayMetricsTable();
 
 import { gameOver } from './game.js';
 
-let correctKeystrokes = 0; // Track correct keystrokes
-let totalKeystrokes = 0; // Track total keystrokes
-window.gameActive = false; // Check if the game is active
-window.gameStart = null; // Start time of the game
-let wpmInterval = null; // Store WPM
+let correctKeystrokes = 0;
+let totalKeystrokes = 0;
+window.gameActive = false;
+window.gameStart = null;
+let wpmInterval = null;
 
 // Start the timer for the game
 export function startTimer() {
-    let timeLeft = 60; // main timer
+    let timeLeft = 60;
     const timerElement = getElement('timer');
     timerElement.textContent = timeLeft;
     clearInterval(window.timer);
 
     window.timer = setInterval(() => {
         if (--timeLeft <= 0) {
-            clearInterval(window.timer); // Stop timer when time is up
-            storeMetrics(correctKeystrokes, totalKeystrokes); // Store the metrics when game ends
-            gameOver(); // Trigger game over logic
+            clearInterval(window.timer);
+            storeMetrics(correctKeystrokes, totalKeystrokes);
+            gameOver();
         }
         timerElement.textContent = timeLeft;
     }, 1000);
@@ -86,20 +86,20 @@ export function startTimer() {
 // Tracking WPM
 export function startWpmTracking() {
     const wpmTracker = getElement('wpmTracker');
-    clearInterval(wpmInterval); // Clear any existing interval
+    clearInterval(wpmInterval);
 
     wpmInterval = setInterval(() => {
-        if (!window.gameActive || window.gameOver) { // Stop tracking if the game is over
+        if (!window.gameActive || window.gameOver) {
             clearInterval(wpmInterval);
             return;
         }
-        wpmTracker.textContent = getWpm(); // Update WPM display
+        wpmTracker.textContent = getWpm();
     }, 100);
 }
 
 // Track keystrokes during the game
 export function trackKeystrokes(event) {
-    if (window.gameOver) return; // Prevent tracking if the game is over
+    if (window.gameOver) return;
     if (!window.gameActive) {
         window.gameActive = true;
         window.gameStart = Date.now();
@@ -111,19 +111,18 @@ export function trackKeystrokes(event) {
     if (currentLetter && currentLetter.textContent === event.key) correctKeystrokes++;
     totalKeystrokes++;
     updateAccuracy();
-    // Adjust the game container based on word position
+
     const currentWord = document.querySelector('.word.current');
     if (currentWord?.getBoundingClientRect().top > 250) {
-        getElement('game-container').style.marginTop = 
+        getElement('game-container').style.marginTop =
             `${parseInt(getComputedStyle(getElement('game-container')).marginTop, 10) - 35}px`;
     }
 }
 
-document.addEventListener('keydown', trackKeystrokes);
 
 // Update the accuracy display
 export function updateAccuracy() {
-    getElement('accuracy').textContent = 
+    getElement('accuracy').textContent =
         totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
 }
 
@@ -142,10 +141,10 @@ export function getWpm() {
 // Store data to localStorage and update
 export function storeMetrics(correct, total) {
     const newMetrics = { wpm: getWpm(), accuracy: total > 0 ? Math.round((correct / total) * 100) : 0 };
-    metricsData.push(newMetrics); // Add new data to the array
-    localStorage.setItem('metrics', JSON.stringify(metricsData)); // Save data to localStorage
-    updateAccuracy(); // Update accuracy display
-    updateChart(); // Update the chart
-    displayMetricsTable(); // Update the metrics table
-    displayImprovement(newMetrics); // Display improvement in performance
+    metricsData.push(newMetrics);
+    localStorage.setItem('metrics', JSON.stringify(metricsData));
+    updateAccuracy();
+    updateChart();
+    displayMetricsTable();
+    displayImprovement(newMetrics);
 }
