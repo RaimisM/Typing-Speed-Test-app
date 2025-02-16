@@ -1,99 +1,91 @@
 import { addClass, removeClass } from './utils.js';
-import { gameOver, gameTimer, moveCursor, moveToNextWord } from './game.js';
+import { gameOver, gameTimer, moveCursor } from './game.js';
 
-document.getElementById('game').addEventListener('keyup', function (event) {
+const gameElement = document.getElementById('game');
+const timerElement = document.getElementById('timer');
+
+// Event listener for keyup events on the game element
+gameElement.addEventListener('keyup', function (event) {
     const key = event.key.toLowerCase();
     let currentWord = document.querySelector('.word.current');
     let currentLetter = document.querySelector('.letter.current');
 
     if (!currentLetter) return;
 
-    const expected = currentLetter.innerHTML.toLowerCase();
+    const expected = currentLetter.textContent.toLowerCase();
     const isLetter = key.length === 1 && key !== ' ';
     const isBackspace = key === 'backspace';
 
-    if (document.getElementById('game').classList.contains('over')) {
+    if (gameElement.classList.contains('over')) {
         return;
     }
 
     console.log({ key, expected });
 
     if (!window.timer && (isLetter || isBackspace)) {
-        window.gameStart = new Date().getTime();
+        window.gameStart = new Date().getTime(); 
 
         window.timer = setInterval(() => {
             const currentTime = new Date().getTime();
             const timePassed = currentTime - window.gameStart;
             const timeLeft = gameTimer - timePassed;
+
             if (timeLeft <= 0) {
                 gameOver();
                 return;
             }
-            document.getElementById('timer').innerHTML = Math.floor(timeLeft / 1000);
+
+            timerElement.textContent = Math.floor(timeLeft / 1000);
         }, 1000);
     }
 
+    // Handle letter input
     if (isLetter) {
         if (key === expected) {
-            addClass(currentLetter, 'correct');
-            removeClass(currentLetter, 'current');
+            addClass(currentLetter, 'correct'); // Mark the letter as correct
+            removeClass(currentLetter, 'current'); // Remove the current class from the current letter
 
-            const nextLetter = currentLetter.nextElementSibling;
+            const nextLetter = currentLetter.nextElementSibling; // Get the next letter
             if (nextLetter) {
-                addClass(nextLetter, 'current');
-            } else {
-                const space = document.createElement('span');
-                space.classList.add('space');
-                space.textContent = ' ';
-                console.log('Word completed');
+                addClass(nextLetter, 'current'); // Make the next letter the current letter
             }
         } else {
-            addClass(currentLetter, 'incorrect');
-            const incorrectLetter = document.createElement('span');
-            incorrectLetter.innerHTML = key;
-            incorrectLetter.className = 'incorrect letter added';
-            currentLetter.parentNode.insertBefore(incorrectLetter, currentLetter);
+            addClass(currentLetter, 'incorrect'); // Mark the letter as incorrect
+            // Store the number of incorrect attempts on this letter
+            currentLetter.dataset.incorrectAttempts = (parseInt(currentLetter.dataset.incorrectAttempts) || 0) + 1;
         }
     }
 
-
-
+    // Handle backspace input
     if (isBackspace) {
         if (currentLetter.classList.contains('incorrect') || currentLetter.classList.contains('correct')) {
-            removeClass(currentLetter, 'incorrect');
-            removeClass(currentLetter, 'correct');
+            removeClass(currentLetter, 'incorrect'); // Remove incorrect class
+            removeClass(currentLetter, 'correct'); // Remove correct class
         }
-    
-        // Find and remove the last incorrect letter if it exists
-        const incorrectLetter = currentLetter.parentNode.querySelector('.incorrect.letter.added');
-        if (incorrectLetter) {
-            let prevLetter = incorrectLetter.previousElementSibling;
-            incorrectLetter.remove();
-    
-            // Ensure the cursor stays on the current position after deletion
-            if (prevLetter) {
-                addClass(prevLetter, 'current');
-            } else {
-                addClass(currentLetter, 'current'); // Keep cursor on current letter
-            }
-    
-            return; // Prevents further cursor movement in this case
+
+        // Remove incorrect attempt tracking
+        delete currentLetter.dataset.incorrectAttempts;
+
+        //Handle incorrect letter deletion
+        const incorrectAttempt = currentLetter.previousElementSibling && currentLetter.previousElementSibling.classList.contains('incorrect') && currentLetter.previousElementSibling.dataset.originalLetter === currentLetter.textContent;
+        if (incorrectAttempt) {
+            incorrectAttempt.remove();
+            addClass(currentLetter, 'current');
+            return;
         }
-    
-        // Normal backspace behavior (if no incorrect letter was removed)
-        removeClass(currentLetter, 'current');
-    
-        let prevLetter = currentLetter.previousElementSibling;
+
+        removeClass(currentLetter, 'current'); // Remove current class from current letter
+
+        let prevLetter = currentLetter.previousElementSibling; // Get the previous letter
+
         if (prevLetter) {
-            addClass(prevLetter, 'current');
+            addClass(prevLetter, 'current'); // Make the previous letter the current letter
         } else {
-            let prevWord = currentWord.previousElementSibling;
+            let prevWord = currentWord.previousElementSibling; // Get the previous word
             if (prevWord) {
-                // Move to the previous word
                 removeClass(currentWord, 'current');
                 addClass(prevWord, 'current');
-    
-                // Move to the last letter of the previous word
+
                 let lastLetter = prevWord.querySelector('.letter:last-child');
                 if (lastLetter) {
                     addClass(lastLetter, 'current');
@@ -102,6 +94,4 @@ document.getElementById('game').addEventListener('keyup', function (event) {
         }
     }
     moveCursor();
-    
-    
 });

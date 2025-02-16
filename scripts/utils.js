@@ -6,12 +6,25 @@ export function removeClass(element, name) {
     if (element) element.classList.remove(name);
 }
 
+export async function generateWords(wordsContainer, wordCount = 200) {
+    wordsContainer.innerHTML = "";
+    const words = [];
+
+    for (let i = 0; i < wordCount; i++) {
+      const word = await randomWord();
+      words.push(word);
+    }
+
+    wordsContainer.innerHTML = words.map(splitWord).join("");
+    return words;
+  }
+
 let words = [];
-let wordsLoaded = false; // Track if words are ready
+let wordsLoaded = false;
 
 // Fetch words from JSON file
 async function loadWords() {
-    if (wordsLoaded) return; // Avoid reloading unnecessarily
+    if (wordsLoaded) return;
 
     try {
         const response = await fetch('../data/words.json');
@@ -19,7 +32,7 @@ async function loadWords() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         words = await response.json();
-        wordsLoaded = true; // Mark as loaded
+        wordsLoaded = true;
         console.log("Words loaded:", words);
     } catch (error) {
         console.error('Error loading words:', error);
@@ -30,7 +43,7 @@ async function loadWords() {
 export async function randomWord() {
     if (!wordsLoaded) {
         console.warn('Waiting for words to load...');
-        await loadWords(); // Ensure words are loaded before using them
+        await loadWords();
     }
 
     if (words.length === 0) {
@@ -39,7 +52,7 @@ export async function randomWord() {
     }
 
     const word = words[Math.floor(Math.random() * words.length)];
-    return word || ''; // Prevent returning undefined
+    return word || '';
 }
 
 // Split a word into <span> elements for each letter

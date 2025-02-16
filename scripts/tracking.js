@@ -60,8 +60,8 @@ displayMetricsTable();
 
 import { gameOver } from './game.js';
 
-let correctKeystrokes = 0;
-let totalKeystrokes = 0;
+window.correctKeystrokes = 0;
+window.totalKeystrokes = 0;
 window.gameActive = false;
 window.gameStart = null;
 let wpmInterval = null;
@@ -76,7 +76,7 @@ export function startTimer() {
     window.timer = setInterval(() => {
         if (--timeLeft <= 0) {
             clearInterval(window.timer);
-            storeMetrics(correctKeystrokes, totalKeystrokes);
+            storeMetrics(window.correctKeystrokes, window.totalKeystrokes);  // ✅ Fixed
             gameOver();
         }
         timerElement.textContent = timeLeft;
@@ -108,23 +108,21 @@ export function trackKeystrokes(event) {
     }
 
     const currentLetter = document.querySelector('.letter.current');
-    if (currentLetter && currentLetter.textContent === event.key) correctKeystrokes++;
-    totalKeystrokes++;
-    updateAccuracy();
-
-    const currentWord = document.querySelector('.word.current');
-    if (currentWord?.getBoundingClientRect().top > 250) {
-        getElement('game-container').style.marginTop =
-            `${parseInt(getComputedStyle(getElement('game-container')).marginTop, 10) - 35}px`;
-    }
+    if (currentLetter && currentLetter.textContent === event.key) window.correctKeystrokes++;
+    window.totalKeystrokes++;
+    updateAccuracy(); // Update accuracy after each keystroke
 }
+
 
 
 // Update the accuracy display
 export function updateAccuracy() {
-    getElement('accuracy').textContent =
-        totalKeystrokes > 0 ? Math.round((correctKeystrokes / totalKeystrokes) * 100) : 0;
+    const accuracy = window.totalKeystrokes > 0
+        ? Math.round((window.correctKeystrokes / window.totalKeystrokes) * 100)
+        : 0;
+    getElement('accuracy').textContent = accuracy;
 }
+
 
 // Calculate WPM
 export function getWpm() {
@@ -140,10 +138,12 @@ export function getWpm() {
 
 // Store data to localStorage and update
 export function storeMetrics(correct, total) {
-    const newMetrics = { wpm: getWpm(), accuracy: total > 0 ? Math.round((correct / total) * 100) : 0 };
+    const newMetrics = {
+        wpm: getWpm(),
+        accuracy: total > 0 ? Math.round((correct / total) * 100) : 0
+    };
     metricsData.push(newMetrics);
     localStorage.setItem('metrics', JSON.stringify(metricsData));
-    updateAccuracy();
     updateChart();
     displayMetricsTable();
     displayImprovement(newMetrics);

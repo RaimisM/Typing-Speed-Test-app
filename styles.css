@@ -71,9 +71,6 @@ footer {
     border-radius: 5px;
 }
 
-
-
-
 .letter.correct {
     color: rgb(20, 126, 20);
 }
@@ -117,13 +114,11 @@ footer {
     opacity: 0.8;
 }
 
-
-
 #table-container {
-    height: 120px; /* Adjust as needed */
-    overflow-y: auto; /* Enables scrolling */
-    display: block; /* Makes sure the table can be scrolled */
-    border: 1px solid #ccc; /* Optional: Adds border for a clean look */
+    height: 120px;
+    overflow-y: auto;
+    display: block;
+    border: 1px solid #ccc;
 }
 
 #metricsTable {
@@ -132,7 +127,7 @@ footer {
 }
 
 #metricsTable thead {
-    display: table; /* Keeps the header fixed */
+    display: table;
     width: 100%;
 }
 
@@ -154,13 +149,11 @@ footer {
     table-layout: fixed;
 }
 
-
-
 #metricsChartContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20vh; /* Makes it 40% of the viewport height */
+    height: 20vh;
 }
 
 
