@@ -34,18 +34,4 @@ A web-based typing speed test game that helps users improve their typing speed a
 - View your performance metrics at the end of the game.
 - Restart the game using the button or by pressing "Enter."
 
-## File Structure
 
-/typing-speed-test
-│── index.html          # Main HTML file
-│── styles.css          # Game styling
-│── scripts/
-│   ├── main.js        # Handles game initialization and event listeners
-│   ├── game.js        # Manages game logic
-│   ├── utils.js       # Contains helper functions like word generation
-│   ├── tracking.js    # Handles performance tracking and visualization
-│   ├── events.js      # Manages event listeners
-│── images/            # Images
-│── data/
-│   ├── words.json     # English words for typing
-│── node_modules/
