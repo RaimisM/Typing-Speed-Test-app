@@ -6,6 +6,11 @@ const timerElement = document.getElementById('timer');
 
 // Event listener for keyup events on the game element
 gameElement.addEventListener('keyup', function (event) {
+    // Check if the game is over and stop further typing
+    if (gameElement.classList.contains('over')) {
+        return; // Early exit to prevent further typing
+    }
+
     const key = event.key.toLowerCase();
     let currentWord = document.querySelector('.word.current');
     let currentLetter = document.querySelector('.letter.current');
@@ -15,10 +20,6 @@ gameElement.addEventListener('keyup', function (event) {
     const expected = currentLetter.textContent.toLowerCase();
     const isLetter = key.length === 1 && key !== ' ';
     const isBackspace = key === 'backspace';
-
-    if (gameElement.classList.contains('over')) {
-        return;
-    }
 
     console.log({ key, expected });
 
@@ -32,6 +33,7 @@ gameElement.addEventListener('keyup', function (event) {
 
             if (timeLeft <= 0) {
                 gameOver();
+                gameElement.classList.add('over');
                 return;
             }
 
@@ -58,20 +60,21 @@ gameElement.addEventListener('keyup', function (event) {
             // Create a span for the incorrect letter
             const incorrectSpan = document.createElement("span");
             incorrectSpan.textContent = key;
-            addClass(incorrectSpan, "letter.incorrect"); // Apply styling class
+            addClass(incorrectSpan, "letter.incorrect");
             incorrectSpan.dataset.isExtra = "true";
+            incorrectSpan.style.color = 'rgb(109, 2, 2)';
             currentLetter.parentNode.insertBefore(incorrectSpan, currentLetter);
         }
     }
 
     // Handle backspace input
     if (isBackspace) {
-        let prevLetter = currentLetter.previousElementSibling; // Get previous letter
+        let prevLetter = currentLetter.previousElementSibling;
 
         // Deleting an inserted incorrect letter
         if (prevLetter && prevLetter.classList.contains("letter.incorrect")) {
             prevLetter.remove(); // Remove incorrect letter
-            return; // Stop further execution (cursor stays in place)
+            return;
         }
 
         // Removing correct/incorrect marking from an expected letter
@@ -84,7 +87,7 @@ gameElement.addEventListener('keyup', function (event) {
         // Move cursor back
         removeClass(currentLetter, "current");
         if (prevLetter) {
-            addClass(prevLetter, "current"); // Move to the previous letter
+            addClass(prevLetter, "current");
         } else {
             let prevWord = currentWord.previousElementSibling;
             if (prevWord) {
@@ -93,10 +96,11 @@ gameElement.addEventListener('keyup', function (event) {
 
                 let lastLetter = prevWord.querySelector(".letter:last-child");
                 if (lastLetter) {
-                    addClass(lastLetter, "current"); // Move to the last letter of the previous word
+                    addClass(lastLetter, "current");
                 }
             }
         }
     }
+
     moveCursor();
 });
