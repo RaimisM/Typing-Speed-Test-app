@@ -109,27 +109,31 @@ footer {
     opacity: 0.8;
 }
 
+/* Table Styling */
 #table-container {
-    height: 120px;
+    height: 120px;  /* Ensures scrollable area */
     overflow-y: auto;
-    display: block;
     border: 1px solid #ccc;
+    display: block; /* Allows scrolling */
 }
 
 #metricsTable {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Prevents column width changes */
 }
 
 #metricsTable thead {
-    display: table;
-    width: 100%;
+    display: table-header-group; /* Ensures headers align */
+    position: sticky;
+    top: 0;
+    background-color: #e6f5e8;
+    z-index: 2;
 }
 
 #metricsTable tbody {
-    display: block;
+    display: table-row-group; /* Keeps rows aligned */
     width: 100%;
-    overflow-y: auto;
 }
 
 #metricsTable th, #metricsTable td {
@@ -139,18 +143,18 @@ footer {
 }
 
 #metricsTable tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+    display: table-row; /* Ensures correct row behavior */
 }
 
+/* Chart Container */
 #metricsChartContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20vh;
+    height: 25vh;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     #header {
         font-size: 2rem;
