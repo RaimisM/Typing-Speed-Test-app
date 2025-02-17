@@ -108,12 +108,22 @@ export function trackKeystrokes(event) {
     }
 
     const currentLetter = document.querySelector('.letter.current');
-    if (currentLetter && currentLetter.textContent === event.key) window.correctKeystrokes++;
+    if (currentLetter && currentLetter.textContent === event.key) {
+        window.correctKeystrokes++;
+    }
     window.totalKeystrokes++;
-    updateAccuracy(); // Update accuracy after each keystroke
+    updateAccuracy();
+
+    // Adjust scrolling of the game container
+    const currentWord = document.querySelector('.word.current');
+    if (currentWord && currentWord.getBoundingClientRect().top > 250) {
+        if (!window.gameOver) {
+            const wordsContainer = document.getElementById('game-container');
+            const computedMargin = parseInt(getComputedStyle(wordsContainer).marginTop, 10) || 1;
+            wordsContainer.style.marginTop = (computedMargin - 35) + 'px';
+        }
+    }
 }
-
-
 
 // Update the accuracy display
 export function updateAccuracy() {
