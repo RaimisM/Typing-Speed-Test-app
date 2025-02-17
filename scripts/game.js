@@ -59,7 +59,12 @@ function resetGame() {
   window.totalKeystrokes = 0; // Reset keystroke count
   window.correctKeystrokes = 0; // Reset correct keystroke count
   window.gameStart = null; // Reset game start time
-  updateAccuracy(); // Update displayed accuracy
+  window.gameOver = false;
+  window.gameActive = false;
+
+  updateAccuracy(); // Reset accuracy display
+  wpmElement.textContent = "0";
+  accuracyElement.textContent = "0";
 
   // Clear timer if it's running
   if (window.timer) {
@@ -68,27 +73,29 @@ function resetGame() {
     timerElement.textContent = "60";
   }
 
-  wpmElement.textContent = "0";
-  accuracyElement.textContent = "0";
-
   // Retrieve saved words or start a new game
   const savedWords = JSON.parse(sessionStorage.getItem("initialWords")) || [];
+  wordsContainer.innerHTML = "";
+
   if (savedWords.length > 0) {
-    wordsContainer.innerHTML = "";
-    savedWords.forEach((word) => (wordsContainer.innerHTML += splitWord(word))); // Add saved words
+    savedWords.forEach((word) => (wordsContainer.innerHTML += splitWord(word)));
     addClass(wordsContainer.querySelector(".word"), "current");
     addClass(wordsContainer.querySelector(".word .letter"), "current");
-    moveCursor();
-    console.log("Game reset with previous session words.");
   } else {
     console.log("No previous words found. Starting a new game...");
     newGame();
+    return;
   }
 
-  window.gameOver = false;
-  window.gameActive = false;
+  moveCursor();
+
+  // Restart WPM tracking and event listeners
+  document.removeEventListener("keydown", startGameOnFirstKeypress);
+  document.addEventListener("keydown", startGameOnFirstKeypress, { once: true });
+
   console.log("Game fully reset: Timer, WPM, Accuracy, Cursor.");
 }
+
 
 // Event listener for Escape key to reset the game
 document.addEventListener("keydown", (event) => {

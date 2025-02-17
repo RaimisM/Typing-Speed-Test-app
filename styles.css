@@ -151,7 +151,6 @@ footer {
     height: 20vh;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     #header {
         font-size: 2rem;
@@ -159,7 +158,7 @@ footer {
         align-items: center;
         text-align: center;
     }
-    
+
     main {
         width: 100%;
         padding: 10px;
