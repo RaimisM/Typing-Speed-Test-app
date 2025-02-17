@@ -42,7 +42,7 @@ button:hover {
     background-color: #fff568;
 }
 
-#label {
+.label {
     color: white;
     font-size: 1rem;
 }
