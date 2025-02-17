@@ -58,7 +58,7 @@ gameElement.addEventListener('keyup', function (event) {
             // Create a span for the incorrect letter
             const incorrectSpan = document.createElement("span");
             incorrectSpan.textContent = key;
-            addClass(incorrectSpan, "incorrect-letter"); // Apply styling class
+            addClass(incorrectSpan, "letter.incorrect"); // Apply styling class
             incorrectSpan.dataset.isExtra = "true";
             currentLetter.parentNode.insertBefore(incorrectSpan, currentLetter);
         }
@@ -69,7 +69,7 @@ gameElement.addEventListener('keyup', function (event) {
         let prevLetter = currentLetter.previousElementSibling; // Get previous letter
 
         // Deleting an inserted incorrect letter
-        if (prevLetter && prevLetter.classList.contains("incorrect-letter")) {
+        if (prevLetter && prevLetter.classList.contains("letter.incorrect")) {
             prevLetter.remove(); // Remove incorrect letter
             return; // Stop further execution (cursor stays in place)
         }
@@ -84,7 +84,7 @@ gameElement.addEventListener('keyup', function (event) {
         // Move cursor back
         removeClass(currentLetter, "current");
         if (prevLetter) {
-            addClass(prevLetter, "current");
+            addClass(prevLetter, "current"); // Move to the previous letter
         } else {
             let prevWord = currentWord.previousElementSibling;
             if (prevWord) {
@@ -93,7 +93,7 @@ gameElement.addEventListener('keyup', function (event) {
 
                 let lastLetter = prevWord.querySelector(".letter:last-child");
                 if (lastLetter) {
-                    addClass(lastLetter, "current");
+                    addClass(lastLetter, "current"); // Move to the last letter of the previous word
                 }
             }
         }

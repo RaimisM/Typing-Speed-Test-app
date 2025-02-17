@@ -146,6 +146,7 @@ export function gameOver() {
 
   wpmElement.textContent = getWpm(); // Display final WPM
   timerElement.textContent = "0"; // Set timer display to 0
+  wpmElement.textContent = "0"; // Set WPM display to 0
 }
 
 // Function to move the cursor
