@@ -97,9 +97,9 @@ function resetGame() {
 }
 
 
-// Event listener for Escape key to reset the game
+// Event listener for Enter key to reset the game
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
+  if (event.key === "Enter") {
     resetGame();
   }
 });

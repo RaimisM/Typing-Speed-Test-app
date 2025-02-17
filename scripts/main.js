@@ -22,15 +22,22 @@ async function startGame() {
 
 // Function to handle game restart
 function restartGame() {
-  location.reload();
+  try {
+    console.log("Restarting game...");
+    location.reload();
+  } catch (error) {
+    console.error("Reload failed:", error);
+  }
 }
 
 // Attach event listeners for game restart
 newGameButton.addEventListener("click", restartGame);
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    restartGame();
+  if (event.key === "Escape") {
+    console.log("Escape pressed, reloading...");
+    setTimeout(() => location.reload(), 100);
   }
 });
+
 
 startGame();
