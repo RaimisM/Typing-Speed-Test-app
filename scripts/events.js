@@ -42,53 +42,58 @@ gameElement.addEventListener('keyup', function (event) {
     // Handle letter input
     if (isLetter) {
         if (key === expected) {
-            addClass(currentLetter, 'correct'); // Mark the letter as correct
-            removeClass(currentLetter, 'current'); // Remove the current class from the current letter
+            addClass(currentLetter, 'correct'); // Mark as correct
+            removeClass(currentLetter, 'current'); // Remove "current" class
 
-            const nextLetter = currentLetter.nextElementSibling; // Get the next letter
+            const nextLetter = currentLetter.nextElementSibling;
             if (nextLetter) {
-                addClass(nextLetter, 'current'); // Make the next letter the current letter
+                addClass(nextLetter, 'current'); // Move to the next letter
             }
         } else {
-            addClass(currentLetter, 'incorrect'); // Mark the letter as incorrect
-            // Store the number of incorrect attempts on this letter
+            addClass(currentLetter, 'incorrect'); // Mark expected letter as incorrect
+
+            // Store incorrect attempts count
             currentLetter.dataset.incorrectAttempts = (parseInt(currentLetter.dataset.incorrectAttempts) || 0) + 1;
+
+            // Create a span for the incorrect letter
+            const incorrectSpan = document.createElement("span");
+            incorrectSpan.textContent = key;
+            addClass(incorrectSpan, "incorrect-letter"); // Apply styling class
+            incorrectSpan.dataset.isExtra = "true";
+            currentLetter.parentNode.insertBefore(incorrectSpan, currentLetter);
         }
     }
 
     // Handle backspace input
     if (isBackspace) {
-        if (currentLetter.classList.contains('incorrect') || currentLetter.classList.contains('correct')) {
-            removeClass(currentLetter, 'incorrect'); // Remove incorrect class
-            removeClass(currentLetter, 'correct'); // Remove correct class
+        let prevLetter = currentLetter.previousElementSibling; // Get previous letter
+
+        // Deleting an inserted incorrect letter
+        if (prevLetter && prevLetter.classList.contains("incorrect-letter")) {
+            prevLetter.remove(); // Remove incorrect letter
+            return; // Stop further execution (cursor stays in place)
         }
 
-        // Remove incorrect attempt tracking
-        delete currentLetter.dataset.incorrectAttempts;
-
-        //Handle incorrect letter deletion
-        const incorrectAttempt = currentLetter.previousElementSibling && currentLetter.previousElementSibling.classList.contains('incorrect') && currentLetter.previousElementSibling.dataset.originalLetter === currentLetter.textContent;
-        if (incorrectAttempt) {
-            incorrectAttempt.remove();
-            addClass(currentLetter, 'current');
-            return;
+        // Removing correct/incorrect marking from an expected letter
+        if (currentLetter.classList.contains("incorrect") || currentLetter.classList.contains("correct")) {
+            removeClass(currentLetter, "incorrect");
+            removeClass(currentLetter, "correct");
+            delete currentLetter.dataset.incorrectAttempts;
         }
 
-        removeClass(currentLetter, 'current'); // Remove current class from current letter
-
-        let prevLetter = currentLetter.previousElementSibling; // Get the previous letter
-
+        // Move cursor back
+        removeClass(currentLetter, "current");
         if (prevLetter) {
-            addClass(prevLetter, 'current'); // Make the previous letter the current letter
+            addClass(prevLetter, "current");
         } else {
-            let prevWord = currentWord.previousElementSibling; // Get the previous word
+            let prevWord = currentWord.previousElementSibling;
             if (prevWord) {
-                removeClass(currentWord, 'current');
-                addClass(prevWord, 'current');
+                removeClass(currentWord, "current");
+                addClass(prevWord, "current");
 
-                let lastLetter = prevWord.querySelector('.letter:last-child');
+                let lastLetter = prevWord.querySelector(".letter:last-child");
                 if (lastLetter) {
-                    addClass(lastLetter, 'current');
+                    addClass(lastLetter, "current");
                 }
             }
         }
