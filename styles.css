@@ -9,14 +9,16 @@ body {
 }
 
 main {
-    width: 768px;
+    width: 90%;
+    max-width: 768px;
     align-items: center;
     margin: 0 auto;
 }
 
 #header {
     display: flex;
-    justify-content: space-between;color: white;
+    justify-content: space-between;
+    color: white;
     font-size: 3rem;
 }
 
@@ -57,7 +59,6 @@ footer {
     position: relative;
     overflow: hidden;
     transition: margin-top 0.5s;
-
 }
 
 #game {
@@ -84,15 +85,9 @@ footer {
 }
 
 @keyframes blink {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 #cursor {
@@ -132,7 +127,7 @@ footer {
 }
 
 #metricsTable tbody {
-    display: block; /* Allows scrolling */
+    display: block;
     width: 100%;
     overflow-y: auto;
 }
@@ -156,5 +151,52 @@ footer {
     height: 20vh;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    #header {
+        font-size: 2rem;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    main {
+        width: 100%;
+        padding: 10px;
+    }
 
+    h1 {
+        font-size: 1.5rem;
+    }
 
+    button {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    #game-container {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    #header {
+        font-size: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 6px 12px;
+        margin: 15px;
+    }
+
+    #game {
+        font-size: 16px;
+        line-height: 28px;
+        height: calc(3 * 28px);
+    }
+}
