@@ -27,7 +27,6 @@ A web-based typing speed test game that helps users improve their typing speed a
 
 ## Usage
 
-- Usage
 - Open the game in a browser.
 - Click inside the typing area or press any key to begin.
 - Type the displayed words as quickly and accurately as possible.
